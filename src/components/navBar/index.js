@@ -3,53 +3,59 @@ import './style.scss';
 import { AppContext } from '../../routes';
 
 // Network
-import SimpleStorageContract from "../../contracts/SimpleStorage.json";
+import TicketManagerContract from "../../contracts/TicketManager.json";
 import getWeb3 from "../../getWeb3";
+import Web3 from "web3";
 
 export const NavBar = () => {
     const { appState, setAppState } = useContext(AppContext);
-    const [connecting, setConnecting] = useState(true);
+    const [connecting, setConnecting] = useState(false);
 
     useEffect(() => {
-        getNetworkState();
-    }, [])
+        connectWithWeb3();
+    }, []);
 
-    const getNetworkState = async () => {
-        setConnecting(true);
+    const connectWithWeb3 = () => {
         try {
-            // Get network provider and web3 instance.
-            const web3 = await getWeb3();
+            const web3 = new Web3(window.ethereum);
             setAppState({ ...appState, web3 });
+            checkIfIsConnected(web3);
+        } catch (error) {
+            alert("No se encontro web3 #1");
+        }
+    }
 
-            // Use web3 to get the user's accounts.
-            const accounts = await web3.eth.getAccounts();
+    const checkIfIsConnected = async (web3) => {
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+            let accountBalance = await web3.eth.getBalance(accounts[0]);
+            accountBalance = web3.utils.fromWei(accountBalance, "Ether");
 
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
-            const deployedNetwork = SimpleStorageContract.networks[networkId];
+            const deployedNetwork = TicketManagerContract.networks[networkId];
             if (deployedNetwork) {
                 const instance = new web3.eth.Contract(
-                    SimpleStorageContract.abi,
+                    TicketManagerContract.abi,
                     deployedNetwork.address,
                 );
-                // Set web3, accounts, and contract to the state, and then proceed with an
-                // example of interacting with the contract's methods.
-
-
-                let accountBalance = await web3.eth.getBalance(accounts[0]);
-                accountBalance = web3.utils.fromWei(accountBalance, "Ether");
-                setAppState({ web3, accounts, contract: instance, accountBalance });
-                setConnecting(false);
+                setAppState({ ...appState, accounts, accountBalance, contract: instance });
             } else {
                 alert("contract not Detected")
             }
-        } catch (error) {
-            // Catch any errors for any of the above operations.
-            alert(
-                `Failed to load web3, accounts, or contract. Check console for details.`,
-            );
-            console.error(error);
+
+
         }
+    }
+
+    const requestConnectWallet = async () => {
+        setConnecting(true);
+        try {
+            await window.ethereum.enable();
+        } catch (error) {
+            alert("No se encontro web3");
+        }
+        setConnecting(false);
     }
 
 
@@ -63,15 +69,19 @@ export const NavBar = () => {
                 {
                         connecting ?
                         <button className="mx-2 text-white text-decoration-none btn btn-sm btn-dark">
-                            <div class="spinner-border spinner-border-sm" role="status"></div> Connecting
+                            <div className="spinner-border spinner-border-sm" role="status"></div> Connecting
                         </button>
                         :
-                        appState && appState.web3 ?
-                        <button className="mx-2 text-white text-decoration-none btn btn-sm btn-success">
-                            Wallet connected
+                        appState && appState.accounts && appState.accounts.length > 0 ?
+                        <button className="mx-2 text-white text-decoration-none btn btn-sm btn-success" title={appState.accounts}>
+                            $
+                            <span> </span>
+                            {
+                                (+appState.accountBalance).toFixed(5) + ' ETH'
+                            }
                         </button>
                         :
-                        <button className="mx-2 text-white text-decoration-none btn btn-sm btn-danger">
+                        <button className="mx-2 text-white text-decoration-none btn btn-sm btn-danger" onClick={() => requestConnectWallet()}>
                             Connect wallet
                         </button>
                 }
