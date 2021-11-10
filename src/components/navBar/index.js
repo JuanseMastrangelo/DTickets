@@ -3,8 +3,7 @@ import './style.scss';
 import { AppContext } from '../../routes';
 
 // Network
-import TicketManagerContract from "../../contracts/TicketManager.json";
-import getWeb3 from "../../getWeb3";
+import MedicalRecordsContract from "../../contracts/MedicalRecords.json";
 import Web3 from "web3";
 
 export const NavBar = () => {
@@ -30,13 +29,13 @@ export const NavBar = () => {
         if (accounts.length > 0) {
             let accountBalance = await web3.eth.getBalance(accounts[0]);
             accountBalance = web3.utils.fromWei(accountBalance, "Ether");
-
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
-            const deployedNetwork = TicketManagerContract.networks[networkId];
+            console.log(networkId);
+            const deployedNetwork = MedicalRecordsContract.networks[networkId];
             if (deployedNetwork) {
                 const instance = new web3.eth.Contract(
-                    TicketManagerContract.abi,
+                    MedicalRecordsContract.abi,
                     deployedNetwork.address,
                 );
                 setAppState({ ...appState, accounts, accountBalance, contract: instance });
@@ -64,7 +63,7 @@ export const NavBar = () => {
             <div className="d-flex">
                 <img src="/images/logo.png" alt="" />
             </div>
-            <div className="d-flex align-items-center">
+            {/* <div className="d-flex align-items-center">
                 <a href="#asd" className="mx-2 text-white text-decoration-none">Home</a>
                 {
                         connecting ?
@@ -85,7 +84,7 @@ export const NavBar = () => {
                             Connect wallet
                         </button>
                 }
-            </div>
+            </div> */}
         </header>
     )
 }
