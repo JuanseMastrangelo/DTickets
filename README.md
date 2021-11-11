@@ -2,7 +2,7 @@
 <h1 align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ethereum-icon-purple.svg/2048px-Ethereum-icon-purple.svg.png" alt="Medical Records Decentralize" width="200">
   <br>
-  Medical Records Decentralize
+  Medical Records Decentralize (MRD)
   <br>
 </h1>
 
@@ -24,7 +24,7 @@
 
 # 👨‍💻 Tech stack
 
-Here's a brief high-level overview of the tech stack the DMR app uses:
+Here's a brief high-level overview of the tech stack the MRD app uses:
 
 - This project uses the [TRUFFLE SUITE](https://trufflesuite.com/). The Truffle Suite gets developers from idea to dapp as comfortably as possible.
 - 🚨 For persistent storage (database), the app uses the [Blockchain Rinkeby](https://www.rinkeby.io/).
