@@ -24,7 +24,7 @@
 
 # 👨‍💻 Tech stack
 
-Here's a brief high-level overview of the tech stack the Well app uses:
+Here's a brief high-level overview of the tech stack the DMR app uses:
 
 - This project uses the [TRUFFLE SUITE](https://trufflesuite.com/). The Truffle Suite gets developers from idea to dapp as comfortably as possible.
 - 🚨 For persistent storage (database), the app uses the [Blockchain Rinkeby](https://www.rinkeby.io/).
